@@ -1,12 +1,12 @@
 import { useContext, useState } from "react"
 import { useHistory } from "react-router"
-import { CurrentUser } from "../contexts/CurrentUser"
+import { CurrentUserContext } from "../contexts/CurrentUser"
 
 function LoginForm() {
 
     const history = useHistory()
 
-    const { setCurrentUser } = useContext(CurrentUser)
+    const { setCurrentUser } = useContext(CurrentUserContext)
 
     const [credentials, setCredentials] = useState({
         email: '',
@@ -15,11 +15,39 @@ function LoginForm() {
 
     const [errorMessage, setErrorMessage] = useState(null)
 
-    async function handleSubmit(e) {
-        e.preventDefault()
-       
+async function handleSubmit(e) {
+  e.preventDefault();
 
+  try {
+    const response = await fetch(`http://localhost:5000/authentication/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    console.log('Response status:', response.status);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error data:', errorData);
+      setErrorMessage(errorData.message);
+      return;
     }
+
+    const data = await response.json();
+    setCurrentUser(data.user);
+    history.push('/');
+
+    console.log('Response data:', data);
+  } catch (error) {
+    console.error('Error during fetch:', error);
+  }
+}
+
+
+
 
     return (
         <main>
