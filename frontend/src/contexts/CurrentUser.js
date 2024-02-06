@@ -7,17 +7,25 @@ function CurrentUserProvider({ children }){
     const [currentUser, setCurrentUser] = useState(null)
 
   useEffect(() => {
-    const getLoggedInUser = async () => {
-      try {
-        let response = await fetch('http://localhost:5000/authentication/profile');
-        let user = await response.json();
-        setCurrentUser(user);
-      } catch (error) {
-        console.error('Error fetching user:', error);
+      const getLoggedInUser = async () => {
+          //   try {
+          //       let response = await fetch('http://localhost:5000/authentication/profile', {
+          //         credentials: 'include'
+          //       });
+          
+          //     let user = await response.json();
+          //     setCurrentUser(user);
+          //   } catch (error) {
+          //     console.error('Error fetching user:', error);
+          //   }
+          // };
+          let response = await fetch('http://localhost:5000/authentication/profile', {
+              credentials: 'include'
+          });
+          let user = await response.json()
+          setCurrentUser(user)
       }
-    };
-
-    getLoggedInUser();
+          getLoggedInUser();
   }, []);
 
     const setAndExportCurrentUser = (user) => {
