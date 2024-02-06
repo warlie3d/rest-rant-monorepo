@@ -3,11 +3,8 @@ import { useHistory } from "react-router"
 import { CurrentUserContext } from "../contexts/CurrentUser"
 
 function LoginForm() {
-
     const history = useHistory()
-
     const { setCurrentUser } = useContext(CurrentUserContext)
-
     const [credentials, setCredentials] = useState({
         email: '',
         password: ''
@@ -38,11 +35,13 @@ async function handleSubmit(e) {
 
     const data = await response.json();
     setCurrentUser(data.user);
+    console.log(data.token);
+    localStorage.setItem('token', data.token)
     history.push('/');
-
     console.log('Response data:', data);
   } catch (error) {
-    console.error('Error during fetch:', error);
+      console.error('Error during fetch:', error);
+      setErrorMessage('An error occurred, please try again')
   }
 }
 
