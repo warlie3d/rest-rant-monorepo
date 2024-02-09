@@ -7,6 +7,9 @@ router.post('/', async (req, res) => {
     if (!req.body.pic) {
         req.body.pic = 'http://placekitten.com/400/400'
     }
+    if (req.currentUser?.role !== 'admin') {
+        return res.status(403).json({ message: 'You are not allowed to add a place'})
+    }
     if (!req.body.city) {
         req.body.city = 'Anytown'
     }
@@ -48,6 +51,9 @@ router.put('/:placeId', async (req, res) => {
     let placeId = Number(req.params.placeId)
     if (isNaN(placeId)) {
         res.status(404).json({ message: `Invalid id "${placeId}"` })
+    }
+    if (req.currentUser?.role !== 'admin') {
+        return res.status(403).json({ message: 'You are not allowed to edit place'})
     } else {
         const place = await Place.findOne({
             where: { placeId: placeId },
@@ -66,6 +72,9 @@ router.delete('/:placeId', async (req, res) => {
     let placeId = Number(req.params.placeId)
     if (isNaN(placeId)) {
         res.status(404).json({ message: `Invalid id "${placeId}"` })
+    }
+    if (req.currentUser?.role !== 'admin') {
+        return res.status(403).json({ message: 'You are not allowed to delete place'})
     } else {
         const place = await Place.findOne({
             where: {
